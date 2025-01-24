@@ -36,12 +36,12 @@ function Hero({ badge, title, subtitle, image, url }: DataHeroItems) {
                 <h1 className="text-5xl md:text-7xl max-w-lg tracking-tighter text-left font-extrabold">
                   {title}
                 </h1>
-                <p className="text-xl leading-relaxed tracking-tight text-muted-foreground max-w-md text-left">
+                <p className="text-xl leading-relaxed tracking-tight text-muted-foreground max-w-md text-left  line-clamp-4">
                   {subtitle}
                 </p>
               </div>
               <div className="flex flex-row gap-4 items-center mt-3">
-                <Link to={`post/${url}`}>
+                <Link to={`posts/${url}`}>
                   <Button size="lg" className="gap-4">
                     Baca selengkapnya! <MoveRight className="w-4 h-4" />
                   </Button>

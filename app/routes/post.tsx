@@ -20,7 +20,7 @@ export async function loader({ params }: Route.LoaderArgs) {
   const content = marked(post.content);
 
   const anotherPost = await getAnotherPost(post.categories[0].categoryName);
-  console.log(anotherPost.length);
+  // console.log(anotherPost.length);
 
   return { post, content, anotherPost };
 }
@@ -28,7 +28,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 export default function Post({ loaderData }: Route.ComponentProps) {
   const { post, content, anotherPost } = loaderData;
   // console.log(anotherPost.length);
-  console.log(post);
+  // console.log(post);
   return (
     <div className="flex flex-col mx-auto max-w-4xl bg-white p-6 rounded-lg h-full">
       <div className="flex items-center">
@@ -68,29 +68,37 @@ export default function Post({ loaderData }: Route.ComponentProps) {
       </div>
       <hr className="mt-8" />
       <div className="flex flex-col gap-4 h-full">
-        <h2 className="text-xl font-bold mt-8">Artikel Lainnya</h2>
-        <div className="grid grid-cols-2 gap-4 h-64">
+        <h2 className="text-lg font-semibold mt-6">Artikel Lainnya</h2>
+        <div className="grid grid-cols-2 gap-6 h-92">
           {anotherPost.length > 1 ? (
             anotherPost.map(
               (category) =>
                 category.id !== post.id && (
-                  <div className=" w-full" key={category.id}>
-                    <Link to={`/post/${category.slug}`} key={category.id}>
+                  <div
+                    className="w-full border-2 border-gray-200 rounded-md shadow-lg"
+                    key={category.id}
+                  >
+                    <Link to={`/posts/${category.slug}`} key={category.id}>
                       <img
                         src={`/carousel/${category.image}`}
                         alt=""
-                        className="object-cover object-center w-full h-48 rounded-md"
+                        className="object-cover object-center w-full h-48 rounded-t-md"
                       />
-                      <h3 className="text-lg font-bold mt-2">
-                        {category.title}
-                      </h3>
+                      <div className="p-4">
+                        <h3 className="text-base font-semibold mt-1">
+                          {category.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground mt-2 text-wrap line-clamp-3">
+                          {category.subtitle}
+                        </p>
+                      </div>
                     </Link>
                   </div>
                 )
             )
           ) : (
             <p className="text-md text-muted-foreground">
-              Mohon maaf, artikel lainnya tidak ditemukan
+              Mohon maaf, artikel lainnya tidak tersedia.
             </p>
           )}
         </div>

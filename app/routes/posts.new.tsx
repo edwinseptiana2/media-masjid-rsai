@@ -50,6 +50,7 @@ export async function action({ request }: Route.ActionArgs) {
   const content = formData.get("content") as string;
   const categories = formData.get("category") as string;
   const split_category = categories
+    .toLowerCase()
     .split(",")
     .map((category) => category.trim());
 
@@ -144,7 +145,7 @@ export async function action({ request }: Route.ActionArgs) {
   }
 }
 
-export default function CardWithForm(_: Route.ComponentProps) {
+export default function NewPost(_: Route.ComponentProps) {
   let fetcher = useFetcher();
   let errors = fetcher.data?.errors;
 

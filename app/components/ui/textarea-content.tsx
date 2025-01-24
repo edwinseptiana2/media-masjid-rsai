@@ -36,9 +36,10 @@ function TextareaContent() {
         name="content"
         value={value}
         maxLength={maxLength}
-        rows={10}
+        rows={15}
         onChange={handleChange}
         aria-describedby="characters-left-textarea"
+        className="overflow-auto"
       />
       <p
         id="characters-left-textarea"

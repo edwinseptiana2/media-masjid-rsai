@@ -11,12 +11,12 @@ export default [
   route("welcome", "routes/welcome.tsx"),
   layout("layouts/layout.tsx", [
     route("posts", "routes/posts.tsx"),
-    route("post/:slug", "routes/post.tsx"),
+    route("posts/:slug", "routes/post.tsx"),
+    route("posts/:slug/edit", "routes/posts.edit.tsx"),
     route("infaq", "routes/infaq.tsx"),
     route("jadwal-sholat", "routes/jadwal-sholat.tsx"),
     route("posts/new", "routes/posts.new.tsx"),
   ]),
-  route("user/:id", "pages/user-profile.tsx", [
-    route("avatar", "api/upload-avatar.tsx"),
-  ]),
+  route("gallery/:galeryId", "pages/upload-gallery.tsx"),
+  route("gallery-show/:galeryId", "api/gallery-show.tsx"),
 ] satisfies RouteConfig;
