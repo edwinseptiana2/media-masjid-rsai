@@ -178,22 +178,6 @@ export default function NewPost(_: Route.ComponentProps) {
                 ) : null}
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="slug">Slug</Label>
-                <Input
-                  id="slug"
-                  name="slug"
-                  placeholder="contoh : judul-postingan (tanpa spasi)"
-                  required
-                />
-                {errors?.slug ? (
-                  <em className="text-red-500">{errors.slug}</em>
-                ) : null}
-              </div>
-              <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="author">Penulis</Label>
-                <Input id="author" name="author" placeholder="Penulis" />
-              </div>
-              <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="subtitle">Deskripsi Judul</Label>
                 <Input
                   id="subtitle"
@@ -218,6 +202,23 @@ export default function NewPost(_: Route.ComponentProps) {
                   <em className="text-red-500">{errors.image}</em>
                 ) : null}
               </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="slug">Slug</Label>
+                <Input
+                  id="slug"
+                  name="slug"
+                  placeholder="contoh : judul-postingan (tanpa spasi)"
+                  required
+                />
+                {errors?.slug ? (
+                  <em className="text-red-500">{errors.slug}</em>
+                ) : null}
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="author">Penulis</Label>
+                <Input id="author" name="author" placeholder="Penulis" />
+              </div>
+
               <div className="flex flex-col space-y-1.5">
                 <TextareaContent />
                 {errors?.content ? (

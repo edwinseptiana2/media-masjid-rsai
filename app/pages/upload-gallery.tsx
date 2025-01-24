@@ -55,6 +55,11 @@ export default function UploadGalery({
         </Button>
       </form>
       <div className="flex flex-col justify-center mt-5">
+        <img
+          src={`/gallery-show/${params.galeryId}`}
+          alt="gallery photo"
+          className="mt-1 w-full"
+        />
         <div className="items-start mt-5 flex-row flex">
           <Button
             variant={"outline"}
@@ -87,11 +92,6 @@ export default function UploadGalery({
             {" />"}
           </div>
         </div>
-        <img
-          src={`/gallery-show/${params.galeryId}`}
-          alt="gallery photo"
-          className="mt-1 w-full"
-        />
       </div>
     </div>
   );

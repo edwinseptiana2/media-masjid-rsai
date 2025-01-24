@@ -2,6 +2,8 @@ import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
 import { useState } from "react";
 import type { ChangeEvent } from "react";
+import { Link } from "react-router";
+import { randomUUID } from "crypto";
 
 function useCharacterLimit({ maxLength }: { maxLength: number }) {
   const [value, setValue] = useState("");
@@ -30,7 +32,14 @@ function TextareaContent() {
 
   return (
     <div className="space-y-2 w-full">
-      <Label htmlFor="content">Content (Format Markdown)</Label>
+      <Label htmlFor="content">
+        Content (Format Markdown){" "}
+        <Link to={`/gallery/${randomUUID().toString()}`} target="_blank">
+          <span className="ml-96 text-white text-xs bg-slate-500 p-1 rounded-full">
+            Upload Gambar untuk Konten
+          </span>
+        </Link>
+      </Label>
       <Textarea
         id="content"
         name="content"
