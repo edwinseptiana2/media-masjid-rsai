@@ -1,5 +1,5 @@
 import { fileStorage, getStorageKey } from "~/carousel-storage.server";
-import type { Route } from "./+types/upload-avatar";
+import type { Route } from "./+types/image-carousel";
 
 export async function loader({ params }: Route.LoaderArgs) {
   const storageKey = getStorageKey(params.id as string);

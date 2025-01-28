@@ -34,7 +34,10 @@ function TextareaContent() {
     <div className="space-y-2 w-full">
       <Label htmlFor="content">
         Content (Format Markdown){" "}
-        <Link to={`/gallery/${randomUUID().toString()}`} target="_blank">
+        <Link
+          to={`/gallery/${Math.random().toString(36).substring(2, 9)}`}
+          target="_blank"
+        >
           <span className="ml-96 text-white text-xs bg-slate-500 p-1 rounded-full">
             Upload Gambar untuk Konten
           </span>

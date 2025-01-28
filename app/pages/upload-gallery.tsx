@@ -11,26 +11,16 @@ export async function action({ request, params }: Route.ActionArgs) {
       fileUpload.type.startsWith("image/")
     ) {
       let storageKey = getStorageKey(params.galeryId);
-
-      // FileUpload objects are not meant to stick around for very long (they are
-      // streaming data from the request.body); store them as soon as possible.
       await fileStorage.set(storageKey, fileUpload);
-
-      // Return a File for the FormData object. This is a LazyFile that knows how
-      // to access the file's content if needed (using e.g. file.stream()) but
-      // waits until it is requested to actually read anything.
       return fileStorage.get(storageKey);
     }
   }
-
   const formData = await parseFormData(request, uploadHandler);
 }
 
-export default function UploadGalery({
-  actionData,
-  params,
-}: Route.ComponentProps) {
-  console.log(params);
+export default function UploadGalery({ params }: Route.ComponentProps) {
+  //when image not found or 404 hidden preview image
+
   return (
     <div className="flex flex-col mx-auto max-w-4xl bg-white p-6 rounded-lg h-full mt-10">
       <h1 className="text-2xl  font-bold">Upload Galery 📸</h1>
@@ -54,13 +44,18 @@ export default function UploadGalery({
           <UploadCloudIcon className="h-5 w-5" /> Upload
         </Button>
       </form>
-      <div className="flex flex-col justify-center mt-5">
+      <div id="copy-image" className="flex flex-col justify-center mt-5">
         <img
+          id="image"
           src={`/gallery-show/${params.galeryId}`}
           alt="gallery photo"
-          className="mt-1 w-full"
+          className="mt-1 w-3/4"
         />
-        <div className="items-start mt-5 flex-row flex">
+        <p className="mt-8 font-bold text-sm text-red-500 italic">
+          Pastikan sebelum <span className="text-zinc-950 p-2">Copy Url</span>{" "}
+          gambar di atas sudah tampil terlebih dahulu.
+        </p>
+        <div className="items-start mt-2 flex-row flex">
           <Button
             variant={"outline"}
             type="button"
@@ -78,7 +73,7 @@ export default function UploadGalery({
           </Button>
           <div
             id="url"
-            className="flex font-bold border border-zinc-200 h-10 p-2 items-center rounded-md"
+            className=" flex font-bold border border-zinc-200 h-10 p-2 items-center rounded-md"
           >
             {"<img src="}
             {'"'}
