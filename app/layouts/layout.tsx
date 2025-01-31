@@ -30,7 +30,7 @@ export default function MenuTabs() {
   ];
 
   return (
-    <div className="flex flex-col gap-4  bg-zinc-100">
+    <div className="flex flex-col gap-4 bg-zinc-100">
       <header className="flex bg-white border-zinc-200 sticky top-0 border-b-2 justify-center items-center gap-4 p-4 max-w-full shadow-sm">
         <div className="flex mx-auto items-center gap-4">
           <img

@@ -8,7 +8,6 @@ import {
 export default [
   index("routes/masjid-rsai.tsx"),
   route("carousel/:id", "api/image-carousel.tsx"),
-  route("welcome", "routes/welcome.tsx"),
   layout("layouts/layout.tsx", [
     route("posts", "routes/posts.tsx"),
     route("posts/:slug", "routes/post.tsx"),

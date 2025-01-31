@@ -1,7 +1,33 @@
 import { prisma } from "~/utils/db.server";
 
 export async function getPosts() {
-  return prisma.post.findMany();
+  return prisma.post.findMany({
+    where: {
+      published: true,
+    },
+    orderBy: {
+      id: "desc",
+    },
+  });
+}
+
+export async function getPostsByCategory(category: string) {
+  if (!category) return prisma.post.findMany();
+  return prisma.post.findMany({
+    where: {
+      published: true,
+      categories: {
+        some: {
+          category: {
+            name: category.toUpperCase(),
+          },
+        },
+      },
+    },
+    orderBy: {
+      id: "desc",
+    },
+  });
 }
 
 export async function getPost(slug: string) {

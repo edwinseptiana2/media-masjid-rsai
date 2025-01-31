@@ -3,7 +3,6 @@ import { Textarea } from "~/components/ui/textarea";
 import { useState } from "react";
 import type { ChangeEvent } from "react";
 import { Link } from "react-router";
-import { randomUUID } from "crypto";
 
 function useCharacterLimit({ maxLength }: { maxLength: number }) {
   const [value, setValue] = useState("");
@@ -30,15 +29,22 @@ function TextareaContent() {
     maxLength: limit,
   } = useCharacterLimit({ maxLength });
 
+  const [urlToken, setUrlToken] = useState(
+    Math.random().toString(36).substring(2, 9)
+  );
+
+  const handleClick = (): void => {
+    const token = Math.random().toString(36).substring(2, 9);
+    setUrlToken(token);
+  };
+
+  const token = Math.random().toString(36).substring(2, 9);
   return (
     <div className="space-y-2 w-full">
       <Label htmlFor="content">
         Content (Format Markdown){" "}
-        <Link
-          to={`/gallery/${Math.random().toString(36).substring(2, 9)}`}
-          target="_blank"
-        >
-          <span className="ml-96 text-white text-xs bg-slate-500 p-1 rounded-full">
+        <Link to={`/gallery/${urlToken}`} onClick={handleClick} target="_blank">
+          <span className="ml-96 text-white text-xs bg-slate-500 px-2 py-1 rounded-full hover:bg-slate-600 hover:text-slate-950">
             Upload Gambar untuk Konten
           </span>
         </Link>

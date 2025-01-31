@@ -22,6 +22,7 @@ model Post {
   subtitle   String?      @db.VarChar(255)
   image      String?      
   content    String       @db.LongText
+  published  Boolean      @default(true)
   categories CategoriesOnPosts[]
 }
 
