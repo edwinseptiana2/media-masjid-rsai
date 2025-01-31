@@ -50,7 +50,7 @@ export async function action({ request }: Route.ActionArgs) {
   const content = formData.get("content") as string;
   const categories = formData.get("category") as string;
   const split_category = categories
-    .toLowerCase()
+    .toUpperCase()
     .split(",")
     .map((category) => category.trim());
 
@@ -120,7 +120,7 @@ export async function action({ request }: Route.ActionArgs) {
         },
       },
     });
-    return redirect(`/post/${createCategory.slug}`);
+    return redirect(`/posts/${createCategory.slug}`);
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       // console.log(e);
