@@ -11,7 +11,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
-import { Link } from "react-router";
+import { Form, Link } from "react-router";
 
 export async function loader({ params }: Route.LoaderArgs) {
   invariant(params.slug, "Expected a slug");
@@ -63,9 +63,35 @@ export default function Post({ loaderData }: Route.ComponentProps) {
         className="flex flex-col mt-8 prose prose-slate mx-auto lg:prose-lg max-[767px]:prose"
         dangerouslySetInnerHTML={{ __html: content }}
       />
-      <div className="flex mt-8">
+      <div className="flex mt-8 justify-between">
         <p className="text-md text-muted-foreground">Penulis: {post.author}</p>
+        <div className="flex gap-2">
+          <Form
+            action="edit"
+            className="text-md text-muted-foreground border-2 border-gray-200 rounded-md shadow-lg p-1 px-3"
+          >
+            <button type="submit">Edit</button>
+          </Form>
+          <Form
+            className="text-md text-muted-foreground border-2 border-gray-200 rounded-md shadow-lg p-1 px-3"
+            action="destroy"
+            method="post"
+            onSubmit={(event) => {
+              const response = confirm(
+                "Please confirm you want to delete this record."
+              );
+              if (!response) {
+                event.preventDefault();
+              }
+            }}
+          >
+            {/* todo cek auth terlebih dahulu */}
+            <input type="hidden" name="id" value={post.id} />
+            <button type="submit">Delete</button>
+          </Form>
+        </div>
       </div>
+
       <hr className="mt-8" />
       <div className="flex flex-col gap-4 h-full">
         <h2 className="text-lg font-semibold mt-6">Artikel Lainnya</h2>

@@ -9,13 +9,35 @@ import {
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
-import { TextareaContent } from "~/components/ui/textarea-content";
-import { data, redirect, useFetcher } from "react-router";
-import type { Route } from "./+types/posts.new";
+import {
+  data,
+  Form,
+  Link,
+  redirect,
+  useFetcher,
+  useNavigate,
+} from "react-router";
 import { parseFormData, type FileUpload } from "@mjackson/form-data-parser";
 import { fileStorage, getStorageKey } from "~/carousel-storage.server";
-import { prisma } from "~/utils/db.server";
 import { Prisma } from "@prisma/client";
+import invariant from "tiny-invariant";
+import type { Route } from "./+types/posts.edit";
+import { useState } from "react";
+import { prisma } from "~/utils/db.server";
+
+export async function loader({ params }: Route.LoaderArgs) {
+  invariant(params.slug, "Expected a slug");
+
+  const post = prisma.post.findUnique({
+    where: { slug: params.slug },
+    include: { categories: true },
+  });
+
+  if (!post) {
+    throw new Response("Not Found", { status: 404 });
+  }
+  return post;
+}
 
 export async function action({ request }: Route.ActionArgs) {
   async function uploadHandler(fileUpload: FileUpload) {
@@ -40,19 +62,28 @@ export async function action({ request }: Route.ActionArgs) {
   }
 
   const formData = await parseFormData(request, uploadHandler);
+
   const fileUpload = formData.get("image") as FileUpload;
+  const oldImage = formData.get("oldImage") as string;
   const badge = formData.get("badge") as string;
   const title = String(formData.get("title"));
   const slug = formData.get("slug") as string;
   const author = formData.get("author") as string;
   const subtitle = formData.get("subtitle") as string;
-  const image = String(fileUpload.name);
   const content = formData.get("content") as string;
   const categories = formData.get("category") as string;
   const split_category = categories
-    .toLowerCase()
+    .toUpperCase()
     .split(",")
     .map((category) => category.trim());
+
+  let data_image: string;
+
+  if (fileUpload) {
+    data_image = String(fileUpload.name as string);
+  } else {
+    data_image = oldImage;
+  }
 
   // console.log(fileUpload);
 
@@ -81,9 +112,9 @@ export async function action({ request }: Route.ActionArgs) {
     errors.content = "Content kurang dari 50 karakter";
   }
 
-  if (fileUpload.size === 0) {
-    errors.image = "Image tidak boleh kosong";
-  }
+  // if (fileUpload.size === 0) {
+  //   errors.image = "Image tidak boleh kosong";
+  // }
 
   if (categories.length < 5) {
     errors.category = "Kategori kurang dari 5 karakter";
@@ -93,16 +124,18 @@ export async function action({ request }: Route.ActionArgs) {
   }
 
   try {
-    const createCategory = await prisma.post.create({
+    const updateCategory = await prisma.post.update({
+      where: { slug },
       data: {
         badge,
         title,
         slug,
         author,
         subtitle,
-        image,
+        image: data_image,
         content,
         categories: {
+          deleteMany: {},
           create: split_category.map((cat) => ({
             assignedBy: author,
             assignedAt: new Date(),
@@ -119,20 +152,13 @@ export async function action({ request }: Route.ActionArgs) {
           })),
         },
       },
+      include: { categories: true },
     });
-    return redirect(`/post/${createCategory.slug}`);
+    return redirect(`/posts/${updateCategory.slug}`);
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
-      // console.log(e);
-      // console.log(fileUpload);
-
       if (e.code === "P2002" && e.meta?.target === "Post_image_key") {
         errors.image = "Image already exist";
-        // await fileStorage.remove(getStorageKey(fileUpload.name as string));
-        // const fileInput = document.getElementById("image");
-        // if (fileInput) {
-        //   (fileInput as HTMLInputElement).value = "";
-        // }
         return data({ errors }, { status: 500 });
       }
 
@@ -145,13 +171,22 @@ export async function action({ request }: Route.ActionArgs) {
   }
 }
 
-export default function EditPost(_: Route.ComponentProps) {
+// HydrateFallback is rendered while the client loader is running
+export function HydrateFallback() {
+  return <div>Loading...</div>;
+}
+
+export default function EditPost({ loaderData }: Route.ComponentProps) {
   let fetcher = useFetcher();
   let errors = fetcher.data?.errors;
+  const navigate = useNavigate();
+  const post = loaderData;
+
+  const [urlToken, setUrlToken] = useState("");
 
   return (
     <div className="flex flex-col mx-auto max-w-4xl bg-white p-6 rounded-lg h-full">
-      <fetcher.Form method="post" encType="multipart/form-data">
+      <Form key={post?.id} method="post" encType="multipart/form-data">
         <Card className="max-w-7xl">
           <CardHeader>
             <CardTitle>Create Posts/Article</CardTitle>
@@ -163,13 +198,19 @@ export default function EditPost(_: Route.ComponentProps) {
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="badge">Badge</Label>
-                <Input id="badge" name="badge" placeholder="Badge postingan" />
+                <Input
+                  id="badge"
+                  name="badge"
+                  placeholder="Badge postingan"
+                  defaultValue={post?.badge || ""}
+                />
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="title">Judul</Label>
                 <Input
                   id="title"
                   name="title"
+                  defaultValue={post?.title || ""}
                   placeholder="Judul postingan"
                   required
                 />
@@ -183,6 +224,7 @@ export default function EditPost(_: Route.ComponentProps) {
                   id="slug"
                   name="slug"
                   placeholder="contoh : judul-postingan (tanpa spasi)"
+                  defaultValue={post?.slug || ""}
                   required
                 />
                 {errors?.slug ? (
@@ -191,7 +233,12 @@ export default function EditPost(_: Route.ComponentProps) {
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="author">Penulis</Label>
-                <Input id="author" name="author" placeholder="Penulis" />
+                <Input
+                  id="author"
+                  name="author"
+                  placeholder="Penulis"
+                  defaultValue={post?.author || ""}
+                />
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="subtitle">Deskripsi Judul</Label>
@@ -199,6 +246,7 @@ export default function EditPost(_: Route.ComponentProps) {
                   id="subtitle"
                   name="subtitle"
                   placeholder="Deskripsikan judul postingan"
+                  defaultValue={post?.subtitle || ""}
                   required
                 />
                 {errors?.subtitle ? (
@@ -207,19 +255,43 @@ export default function EditPost(_: Route.ComponentProps) {
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="image">Image Slider</Label>
-                <Input
-                  accept="image/*"
-                  id="image"
-                  type="file"
-                  name="image"
-                  required
+                <img
+                  src={`/carousel/${post?.image}`}
+                  alt=""
+                  className="object-cover object-center w-48  rounded-md"
                 />
+                <input
+                  type="hidden"
+                  name="oldImage"
+                  value={post?.image || ""}
+                />
+                <Input accept="image/*" id="image" type="file" name="image" />
                 {errors?.image ? (
                   <em className="text-red-500">{errors.image}</em>
                 ) : null}
               </div>
-              <div className="flex flex-col space-y-1.5">
-                <TextareaContent />
+              <div className="flex flex-col justify-between ">
+                <Label htmlFor="content" className="flex justify-between mr-10">
+                  Content (Format Markdown)
+                  <Link
+                    className="flex text-slate-950 text-xs bg-slate-300 px-2 py-1 rounded-full hover:bg-slate-400 hover:text-slate-950 "
+                    to={`/gallery/${urlToken}`}
+                    onClick={() =>
+                      setUrlToken(Math.random().toString(36).substring(2, 9))
+                    }
+                    target="_blank"
+                  >
+                    <span>📸 Upload Gambar untuk Konten</span>
+                  </Link>
+                </Label>
+                <textarea
+                  defaultValue={post?.content}
+                  id="content"
+                  name="content"
+                  rows={15}
+                  aria-describedby="characters-left-textarea"
+                  className="overflow-auto p-2 mt-3  bg-white border border-zinc-200 rounded-md active:border-zinc-200 hover:border-zinc-300 focus:outline-none focus:border-2 focus:border-zinc-600 focus:ring-0"
+                />
                 {errors?.content ? (
                   <em className="text-red-500">{errors.content}</em>
                 ) : null}
@@ -230,6 +302,9 @@ export default function EditPost(_: Route.ComponentProps) {
                   id="category"
                   name="category"
                   placeholder="Kategori : pisahkan dengan , (koma)"
+                  defaultValue={post?.categories
+                    .map((c) => c.categoryName)
+                    .join(", ")}
                 />
                 {errors?.category ? (
                   <em className="text-red-500">{errors.category}</em>
@@ -238,11 +313,18 @@ export default function EditPost(_: Route.ComponentProps) {
             </div>
           </CardContent>
           <CardFooter className="flex justify-end gap-3 mt-3">
-            <Button variant="outline">Cancel</Button>
+            <Button
+              variant="outline"
+              onClick={() => navigate(-1)}
+              type="button"
+            >
+              Cancel
+            </Button>
+
             <Button type="submit">Simpan</Button>
           </CardFooter>
         </Card>
-      </fetcher.Form>
+      </Form>
     </div>
   );
 }

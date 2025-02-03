@@ -11,6 +11,7 @@ export default [
   layout("layouts/layout.tsx", [
     route("posts", "routes/posts.tsx"),
     route("posts/:slug", "routes/post.tsx"),
+    route("posts/:slug/destroy", "routes/posts.destroy.tsx"),
     route("posts/:slug/edit", "routes/posts.edit.tsx"),
     route("infaq", "routes/infaq.tsx"),
     route("jadwal-sholat", "routes/jadwal-sholat.tsx"),

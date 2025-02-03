@@ -13,6 +13,7 @@ function useCharacterLimit({ maxLength }: { maxLength: number }) {
   };
 
   return {
+    defaultValue: value,
     value,
     characterCount,
     handleChange,
@@ -20,7 +21,7 @@ function useCharacterLimit({ maxLength }: { maxLength: number }) {
   };
 }
 
-function TextareaContent() {
+function TextareaContent({ defaultValue }: { defaultValue: string }) {
   const maxLength = 50000;
   const {
     value,
@@ -37,27 +38,32 @@ function TextareaContent() {
     const token = Math.random().toString(36).substring(2, 9);
     setUrlToken(token);
   };
-
   const token = Math.random().toString(36).substring(2, 9);
   return (
     <div className="space-y-2 w-full">
-      <Label htmlFor="content">
-        Content (Format Markdown){" "}
-        <Link to={`/gallery/${urlToken}`} onClick={handleClick} target="_blank">
-          <span className="ml-96 text-white text-xs bg-slate-500 px-2 py-1 rounded-full hover:bg-slate-600 hover:text-slate-950">
-            Upload Gambar untuk Konten
-          </span>
+      <Label htmlFor="content" className="flex justify-between mr-10">
+        Content (Format Markdown)
+        <Link
+          className="flex text-slate-950 text-xs bg-slate-300 px-2 py-1 rounded-full hover:bg-slate-400 hover:text-slate-950 "
+          to={`/gallery/${urlToken}`}
+          onClick={() =>
+            setUrlToken(Math.random().toString(36).substring(2, 9))
+          }
+          target="_blank"
+        >
+          <span>📸 Upload Gambar untuk Konten</span>
         </Link>
       </Label>
       <Textarea
         id="content"
         name="content"
+        defaultValue={defaultValue}
         value={value}
         maxLength={maxLength}
         rows={15}
         onChange={handleChange}
         aria-describedby="characters-left-textarea"
-        className="overflow-auto"
+        className="overflow-auto p-2 mt-3"
       />
       <p
         id="characters-left-textarea"

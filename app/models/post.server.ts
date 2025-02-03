@@ -12,7 +12,7 @@ export async function getPosts() {
 }
 
 export async function getPostsByCategory(category: string) {
-  if (!category) return prisma.post.findMany();
+  if (!category || category === "ALL") return prisma.post.findMany();
   return prisma.post.findMany({
     where: {
       published: true,
@@ -61,4 +61,25 @@ export async function getCategories() {
 
 export async function getUsers() {
   return prisma.user.findMany();
+}
+
+export async function deletePost(slug: string) {
+  const post = await getPost(slug);
+  if (!post) return null;
+  await prisma.categoriesOnPosts.deleteMany({
+    where: {
+      postId: post.id,
+    },
+  });
+
+  await prisma.post.deleteMany({
+    where: {
+      id: post.id,
+    },
+  });
+
+  return {
+    status: 201,
+    message: "Post deleted successfully.",
+  };
 }
