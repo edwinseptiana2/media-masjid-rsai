@@ -12,7 +12,8 @@ export async function getPosts() {
 }
 
 export async function getPostsByCategory(category: string) {
-  if (!category || category === "ALL") return prisma.post.findMany();
+  if (!category || category === "ALL")
+    return prisma.post.findMany({ where: { published: true } });
   return prisma.post.findMany({
     where: {
       published: true,
@@ -32,7 +33,7 @@ export async function getPostsByCategory(category: string) {
 
 export async function getPost(slug: string) {
   return prisma.post.findUnique({
-    where: { slug },
+    where: { slug, published: true },
     include: { categories: true },
   });
 }
@@ -48,6 +49,7 @@ export async function getAnotherPost(category: string) {
           },
         },
       },
+      published: true,
     },
     orderBy: {
       id: "desc",
@@ -56,7 +58,20 @@ export async function getAnotherPost(category: string) {
 }
 
 export async function getCategories() {
-  return prisma.category.findMany();
+  return prisma.categoriesOnPosts.findMany({
+    distinct: ["categoryName"],
+    select: {
+      categoryName: true,
+    },
+    where: {
+      post: {
+        published: true,
+      },
+    },
+    orderBy: {
+      categoryName: "asc",
+    },
+  });
 }
 
 export async function getUsers() {

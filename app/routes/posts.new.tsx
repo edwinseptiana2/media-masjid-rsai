@@ -10,12 +10,15 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
 import { TextareaContent } from "~/components/ui/textarea-content";
-import { data, redirect, useFetcher } from "react-router";
+import { data, Link, redirect, useFetcher } from "react-router";
 import type { Route } from "./+types/posts.new";
 import { parseFormData, type FileUpload } from "@mjackson/form-data-parser";
 import { fileStorage, getStorageKey } from "~/carousel-storage.server";
 import { prisma } from "~/utils/db.server";
 import { Prisma } from "@prisma/client";
+import { use, useEffect, useState } from "react";
+import { url } from "inspector";
+import { randomUUID } from "crypto";
 
 export async function action({ request }: Route.ActionArgs) {
   async function uploadHandler(fileUpload: FileUpload) {
@@ -73,20 +76,32 @@ export async function action({ request }: Route.ActionArgs) {
     errors.title = "Judul kurang dari 12 karakter";
   }
 
+  if (title.length > 255) {
+    errors.content = "Judul lebih dari 255 karakter";
+  }
+
   if (subtitle.length < 12) {
     errors.subtitle = "Deskripsi Judul kurang dari 12 karakter";
+  }
+
+  if (subtitle.length > 255) {
+    errors.content = "Deskripsi lebih dari 255 karakter";
   }
 
   if (content.length < 50) {
     errors.content = "Content kurang dari 50 karakter";
   }
 
+  if (content.length > 16777215) {
+    errors.content = "Content lebih dari 50 karakter";
+  }
+
   if (fileUpload.size === 0) {
     errors.image = "Image tidak boleh kosong";
   }
 
-  if (categories.length < 5) {
-    errors.category = "Kategori kurang dari 5 karakter";
+  if (categories.length < 2) {
+    errors.category = "Kategori kurang dari 2 karakter";
   }
   if (Object.keys(errors).length > 0) {
     return data({ errors }, { status: 400 });
@@ -220,13 +235,28 @@ export default function NewPost(_: Route.ComponentProps) {
               </div>
 
               <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="content" className="flex justify-between mr-10">
+                  Content (Format Markdown)
+                  <Link
+                    className="flex text-slate-950 text-xs bg-slate-300 px-2 py-1 rounded-full hover:bg-slate-400 hover:text-slate-950 "
+                    to={`/gallery/upload-gallery`}
+                    target="_blank"
+                  >
+                    <span>📸 Upload Gambar untuk Konten</span>
+                  </Link>
+                </Label>
                 <TextareaContent />
                 {errors?.content ? (
                   <em className="text-red-500">{errors.content}</em>
                 ) : null}
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="category">Kategori</Label>
+                <Label htmlFor="category">
+                  Kategori :{" "}
+                  <span className="text-sm text-muted-foreground">
+                    pisahkan dengan , (koma)
+                  </span>
+                </Label>
                 <Input
                   id="category"
                   name="category"

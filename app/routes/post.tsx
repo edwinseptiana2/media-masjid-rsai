@@ -20,15 +20,13 @@ export async function loader({ params }: Route.LoaderArgs) {
   const content = marked(post.content);
 
   const anotherPost = await getAnotherPost(post.categories[0].categoryName);
-  // console.log(anotherPost.length);
 
   return { post, content, anotherPost };
 }
 
 export default function Post({ loaderData }: Route.ComponentProps) {
   const { post, content, anotherPost } = loaderData;
-  // console.log(anotherPost.length);
-  // console.log(post);
+
   return (
     <div className="flex flex-col mx-auto max-w-4xl bg-white p-6 rounded-lg h-full">
       <div className="flex items-center">
@@ -93,6 +91,7 @@ export default function Post({ loaderData }: Route.ComponentProps) {
       </div>
 
       <hr className="mt-8" />
+
       <div className="flex flex-col gap-4 h-full">
         <h2 className="text-lg font-semibold mt-6">Artikel Lainnya</h2>
         <div className="grid grid-cols-2 gap-6 h-92">

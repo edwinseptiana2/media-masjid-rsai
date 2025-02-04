@@ -1,4 +1,3 @@
-// import { getPosts, getTags } from "~/models/post.server";
 import type { Route } from "./+types/posts";
 import {
   Breadcrumb,
@@ -80,15 +79,15 @@ export default function Posts({ loaderData }: Route.ComponentProps) {
             {categories.map((category) => (
               <div
                 className="flex flex-grow-0 border-2 border-gray-200 rounded-full shadow-lg "
-                key={category.name}
+                key={category.categoryName}
               >
                 <Link
-                  to={`/posts?q=${category.name.toUpperCase()}`}
-                  key={category.name}
+                  to={`/posts?q=${category.categoryName.toUpperCase()}`}
+                  key={category.categoryName}
                 >
                   <div className="p-2 px-8">
                     <h3 className="text-base font-semibold">
-                      {category.name.toUpperCase()}
+                      {category.categoryName.toUpperCase()}
                     </h3>
                   </div>
                 </Link>

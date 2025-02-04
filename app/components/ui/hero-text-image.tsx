@@ -48,13 +48,15 @@ function Hero({ badge, title, subtitle, image, url }: DataHeroItems) {
                 </Link>
               </div>
             </div>
-            <div className="rounded-md aspect-square items-center justify-center bg-zinc-900">
-              <img
-                src={`/carousel/${image}`}
-                className="h-full w-full object-center object-cover z-50"
-                alt=""
-              />
-            </div>
+            <Link to={`posts/${url}`}>
+              <div className="rounded-md aspect-square items-center justify-center bg-zinc-900">
+                <img
+                  src={`/carousel/${image}`}
+                  className="h-full w-full object-center object-cover z-50"
+                  alt=""
+                />
+              </div>
+            </Link>
           </div>
         </div>
       </motion.div>
