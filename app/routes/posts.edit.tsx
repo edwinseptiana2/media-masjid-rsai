@@ -26,7 +26,7 @@ import { useRef, useState } from "react";
 import { prisma } from "~/utils/db.server";
 import { Checkbox } from "~/components/ui/checkbox";
 import { getPost } from "~/models/post.server";
-import { randomUUID } from "crypto";
+import { nanoid } from "nanoid";
 
 export async function loader({ params }: Route.LoaderArgs) {
   invariant(params.slug, "Expected a slug");
@@ -81,8 +81,6 @@ export async function action({ request }: Route.ActionArgs) {
   } else {
     data_image = oldImage;
   }
-
-  // console.log(fileUpload);
 
   const errors: {
     title?: string;
@@ -197,6 +195,9 @@ export default function EditPost({ loaderData }: Route.ComponentProps) {
   const navigate = useNavigate();
   const post = loaderData;
 
+  const imageId = nanoid();
+  const [token, setToken] = useState("");
+
   const checkboxRef = useRef(null);
 
   return (
@@ -291,8 +292,11 @@ export default function EditPost({ loaderData }: Route.ComponentProps) {
                   Content (Format Markdown)
                   <Link
                     className="flex text-slate-950 text-xs bg-slate-300 px-2 py-1 rounded-full hover:bg-slate-400 hover:text-slate-950 "
-                    to={`/gallery/${randomUUID()}`}
+                    to={`/gallery/${token}`}
                     target="_blank"
+                    onClick={() => {
+                      setToken(imageId);
+                    }}
                   >
                     <span>📸 Upload Gambar untuk Konten</span>
                   </Link>

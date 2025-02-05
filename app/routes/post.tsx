@@ -33,15 +33,15 @@ export default function Post({ loaderData }: Route.ComponentProps) {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink>
-                <Link to={"/"}>Home</Link>
-              </BreadcrumbLink>
+              {/* <BreadcrumbLink href="/"> */}
+              <Link to={"/"}>Home</Link>
+              {/* </BreadcrumbLink> */}
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink>
-                <Link to={"/posts"}>Posts</Link>
-              </BreadcrumbLink>
+              {/* <BreadcrumbLink> */}
+              <Link to={"/posts"}>Posts</Link>
+              {/* </BreadcrumbLink> */}
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
@@ -83,7 +83,6 @@ export default function Post({ loaderData }: Route.ComponentProps) {
               }
             }}
           >
-            {/* todo cek auth terlebih dahulu */}
             <input type="hidden" name="id" value={post.id} />
             <button type="submit">Delete</button>
           </Form>

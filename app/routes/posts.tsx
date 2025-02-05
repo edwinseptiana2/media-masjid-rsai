@@ -41,15 +41,11 @@ export default function Posts({ loaderData }: Route.ComponentProps) {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink>
-                <Link to={"/"}>Home</Link>
-              </BreadcrumbLink>
+              <Link to={"/"}>Home</Link>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink>
-                <Link to={"/posts"}>Posts</Link>
-              </BreadcrumbLink>
+              <Link to={"/posts"}>Posts</Link>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>

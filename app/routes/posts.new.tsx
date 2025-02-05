@@ -1,3 +1,4 @@
+import type { Route } from "./+types/posts.new";
 import {
   Card,
   CardContent,
@@ -10,15 +11,13 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
 import { TextareaContent } from "~/components/ui/textarea-content";
-import { data, Link, redirect, useFetcher } from "react-router";
-import type { Route } from "./+types/posts.new";
+import { data, Link, redirect, useFetcher, useNavigate } from "react-router";
 import { parseFormData, type FileUpload } from "@mjackson/form-data-parser";
 import { fileStorage, getStorageKey } from "~/carousel-storage.server";
 import { prisma } from "~/utils/db.server";
 import { Prisma } from "@prisma/client";
-import { use, useEffect, useState } from "react";
-import { url } from "inspector";
-import { randomUUID } from "crypto";
+import { useState } from "react";
+import { nanoid } from "nanoid";
 
 export async function action({ request }: Route.ActionArgs) {
   async function uploadHandler(fileUpload: FileUpload) {
@@ -56,8 +55,6 @@ export async function action({ request }: Route.ActionArgs) {
     .toUpperCase()
     .split(",")
     .map((category) => category.trim());
-
-  // console.log(fileUpload);
 
   const errors: {
     title?: string;
@@ -163,6 +160,8 @@ export async function action({ request }: Route.ActionArgs) {
 export default function NewPost(_: Route.ComponentProps) {
   let fetcher = useFetcher();
   let errors = fetcher.data?.errors;
+  const imageId = nanoid();
+  const [token, setToken] = useState("");
 
   return (
     <div className="flex flex-col mx-auto max-w-4xl bg-white p-6 rounded-lg h-full">
@@ -238,9 +237,12 @@ export default function NewPost(_: Route.ComponentProps) {
                 <Label htmlFor="content" className="flex justify-between mr-10">
                   Content (Format Markdown)
                   <Link
-                    className="flex text-slate-950 text-xs bg-slate-300 px-2 py-1 rounded-full hover:bg-slate-400 hover:text-slate-950 "
-                    to={`/gallery/upload-gallery`}
+                    to={`/gallery/${token}`}
                     target="_blank"
+                    className="flex text-slate-950 text-xs bg-slate-300 px-2 py-1 rounded-full hover:bg-slate-400 hover:text-slate-950 "
+                    onClick={() => {
+                      setToken(imageId);
+                    }}
                   >
                     <span>📸 Upload Gambar untuk Konten</span>
                   </Link>

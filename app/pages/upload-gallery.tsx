@@ -1,4 +1,4 @@
-import { FileUpload, parseFormData } from "@mjackson/form-data-parser";
+import { type FileUpload, parseFormData } from "@mjackson/form-data-parser";
 import { fileStorage, getStorageKey } from "~/gallery-storage.server";
 import type { Route } from "./+types/upload-gallery";
 import { Button } from "~/components/ui/button";
@@ -61,31 +61,39 @@ export default function UploadGalery({ params }: Route.ComponentProps) {
             type="button"
             className="flex mr-1 font-bold"
             onClick={() => {
-              navigator.clipboard.writeText(
-                document.getElementById("url")!.textContent!
-              );
-              alert(
-                "Link gambar berhasil disalin, silahkan di paste di Content Markdown"
-              );
+              // copy to clipboard
+              const copyText = document.getElementById(
+                "url"
+              ) as HTMLInputElement;
+              copyText.select();
+              copyText.setSelectionRange(0, 99999);
+              try {
+                // navigator.clipboard.writeText(copyText.value);
+                navigator.clipboard.readText().then(() => {
+                  navigator.clipboard.writeText(copyText.value);
+                });
+                alert(
+                  "Link gambar berhasil disalin, silahkan di paste di Content Markdown : " +
+                    copyText.value
+                );
+              } catch (err) {
+                alert("Oops, unable to copy " + err);
+              }
             }}
           >
             <CopyIcon className="h-5 w-5 mr-2" /> Copy Url
           </Button>
-          <div
-            id="url"
-            className=" flex font-bold border border-zinc-200 h-10 p-2 items-center rounded-md"
-          >
-            {"<img src="}
-            {'"'}
-            {"/gallery-show/"}
-            {params.galeryId}
-            {'" '}
-            {"alt="}
-            {'"'}
-            {params.galeryId}
-            {'"'}
-            {" />"}
+
+          <div className="flex items-center w-full ml-3 text-sm">
+            {`<img src="/gallery-show/${params.galeryId}" alt="photo gallery" />`}
           </div>
+          <input
+            type="text"
+            id="url"
+            name="url"
+            className="invisible font-bold bg-white w-full border-zinc-100 h-10 p-2 items-center rounded-md"
+            defaultValue={`<img src="/gallery-show/${params.galeryId}" alt="photo gallery" />`}
+          />
         </div>
       </div>
     </div>

@@ -1,8 +1,6 @@
-import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
 import { useState } from "react";
 import type { ChangeEvent } from "react";
-import { Link } from "react-router";
 
 function useCharacterLimit({ maxLength }: { maxLength: number }) {
   const [value, setValue] = useState("");
