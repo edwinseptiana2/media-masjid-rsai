@@ -13,6 +13,7 @@ import {
   getPosts,
   getPostsByCategory,
 } from "~/models/post.server";
+import { getSession } from "~/utils/session";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
@@ -23,7 +24,11 @@ export async function loader({ request }: Route.LoaderArgs) {
   const posts = await getPostsByCategory(q || "");
   const categories = await getCategories();
 
-  return { posts, categories, q };
+  const session = await getSession(request.headers.get("Cookie"));
+  const userId = session.has("userId");
+  console.log(typeof posts);
+
+  return { posts, categories, q, userId };
 }
 
 export function HydrateFallback() {
@@ -31,13 +36,13 @@ export function HydrateFallback() {
 }
 
 export default function Posts({ loaderData }: Route.ComponentProps) {
-  const { posts, categories, q } = loaderData;
+  const { posts, categories, q, userId } = loaderData;
   const str = q?.toLocaleLowerCase() || "";
   let result = str.charAt(0).toUpperCase() + str.slice(1);
 
   return (
     <div className="flex flex-wrap  mx-auto max-w-4xl bg-white p-6 rounded-lg pb-[50px]">
-      <div className="flex items-center">
+      <div className="flex items-center justify-between w-full">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -55,6 +60,16 @@ export default function Posts({ loaderData }: Route.ComponentProps) {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
+        {userId && (
+          <div className="flex gap-2 ">
+            <Link
+              to={`/posts/new`}
+              className="text-md text-muted-foreground border-2 border-gray-200 rounded-md shadow-lg p-1 px-3"
+            >
+              Create New Post
+            </Link>
+          </div>
+        )}
       </div>
       <div className="flex flex-col gap-4 h-full">
         <h2 className="text-3xl font-semibold mt-9">

@@ -16,6 +16,7 @@ export default [
     route("jadwal-sholat", "routes/jadwal-sholat.tsx"),
     route("infaq", "routes/infaq.tsx"),
   ]),
+  route("login", "routes/login.tsx"),
   route("carousel/:id", "api/image-carousel.tsx"),
   route("gallery/:galeryId", "pages/upload-gallery.tsx"),
   route("gallery-show/:galeryId", "api/gallery-show.tsx"),

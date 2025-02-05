@@ -12,20 +12,23 @@ import {
   BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb";
 import { Form, Link } from "react-router";
+import { getSession } from "~/utils/session";
 
-export async function loader({ params }: Route.LoaderArgs) {
+export async function loader({ params, request }: Route.LoaderArgs) {
   invariant(params.slug, "Expected a slug");
   const post = await getPost(params.slug);
   invariant(post, "Post not found");
   const content = marked(post.content);
 
   const anotherPost = await getAnotherPost(post.categories[0].categoryName);
+  const session = await getSession(request.headers.get("Cookie"));
+  const userId = session.has("userId");
 
-  return { post, content, anotherPost };
+  return { post, content, anotherPost, userId };
 }
 
 export default function Post({ loaderData }: Route.ComponentProps) {
-  const { post, content, anotherPost } = loaderData;
+  const { post, content, anotherPost, userId } = loaderData;
 
   return (
     <div className="flex flex-col mx-auto max-w-4xl bg-white p-6 rounded-lg h-full">
@@ -63,30 +66,38 @@ export default function Post({ loaderData }: Route.ComponentProps) {
       />
       <div className="flex mt-8 justify-between">
         <p className="text-md text-muted-foreground">Penulis: {post.author}</p>
-        <div className="flex gap-2">
-          <Form
-            action="edit"
-            className="text-md text-muted-foreground border-2 border-gray-200 rounded-md shadow-lg p-1 px-3"
-          >
-            <button type="submit">Edit</button>
-          </Form>
-          <Form
-            className="text-md text-muted-foreground border-2 border-gray-200 rounded-md shadow-lg p-1 px-3"
-            action="destroy"
-            method="post"
-            onSubmit={(event) => {
-              const response = confirm(
-                "Please confirm you want to delete this record."
-              );
-              if (!response) {
-                event.preventDefault();
-              }
-            }}
-          >
-            <input type="hidden" name="id" value={post.id} />
-            <button type="submit">Delete</button>
-          </Form>
-        </div>
+        {userId && (
+          <div className="flex gap-2">
+            <Link
+              to={`/posts/new`}
+              className="text-md text-muted-foreground border-2 border-gray-200 rounded-md shadow-lg p-1 px-3"
+            >
+              Create New Post
+            </Link>
+            <Form
+              action="edit"
+              className="text-md text-muted-foreground border-2 border-gray-200 rounded-md shadow-lg p-1 px-3"
+            >
+              <button type="submit">Edit</button>
+            </Form>
+            <Form
+              className="text-md text-muted-foreground border-2 border-gray-200 rounded-md shadow-lg p-1 px-3"
+              action="destroy"
+              method="post"
+              onSubmit={(event) => {
+                const response = confirm(
+                  "Please confirm you want to delete this record."
+                );
+                if (!response) {
+                  event.preventDefault();
+                }
+              }}
+            >
+              <input type="hidden" name="id" value={post.id} />
+              <button type="submit">Delete</button>
+            </Form>
+          </div>
+        )}
       </div>
 
       <hr className="mt-8" />

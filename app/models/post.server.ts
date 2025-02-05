@@ -1,5 +1,16 @@
 import { prisma } from "~/utils/db.server";
 
+export async function validateCredentials(username: string, password: string) {
+  const userWithPassword = await prisma.user.findFirst({
+    where: {
+      userName: username,
+      password: password,
+    },
+  });
+
+  return userWithPassword;
+}
+
 export async function getPosts() {
   return prisma.post.findMany({
     where: {

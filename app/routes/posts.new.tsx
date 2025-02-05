@@ -160,6 +160,7 @@ export async function action({ request }: Route.ActionArgs) {
 export default function NewPost(_: Route.ComponentProps) {
   let fetcher = useFetcher();
   let errors = fetcher.data?.errors;
+  const navigate = useNavigate();
   const imageId = nanoid();
   const [token, setToken] = useState("");
 
@@ -271,7 +272,13 @@ export default function NewPost(_: Route.ComponentProps) {
             </div>
           </CardContent>
           <CardFooter className="flex justify-end gap-3 mt-3">
-            <Button variant="outline">Cancel</Button>
+            <Button
+              variant="outline"
+              onClick={() => navigate("/posts")}
+              type="button"
+            >
+              Cancel
+            </Button>
             <Button type="submit">Simpan</Button>
           </CardFooter>
         </Card>

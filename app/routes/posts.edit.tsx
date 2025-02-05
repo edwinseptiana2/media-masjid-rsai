@@ -27,8 +27,16 @@ import { prisma } from "~/utils/db.server";
 import { Checkbox } from "~/components/ui/checkbox";
 import { getPost } from "~/models/post.server";
 import { nanoid } from "nanoid";
+import { getSession } from "~/utils/session";
 
-export async function loader({ params }: Route.LoaderArgs) {
+export async function loader({ params, request }: Route.LoaderArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+
+  if (!session.has("userId")) {
+    // Redirect to the home page if they are already signed in.
+    return redirect("/login");
+  }
+
   invariant(params.slug, "Expected a slug");
   const post = await getPost(params.slug);
   invariant(post, "Post not found");
