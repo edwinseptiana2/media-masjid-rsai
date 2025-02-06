@@ -40,7 +40,38 @@ export async function loader({ request }: Route.LoaderArgs) {
 export default function JadwalSholat({ loaderData }: Route.ComponentProps) {
   const { data } = loaderData;
   const jadwal = data.data.jadwal;
-  // console.log(jadwal);
+
+  const today = new Date().toLocaleDateString();
+
+  const formatData = jadwal.map((item: any) => {
+    const dateParts = item.tanggal.split(",")[1];
+    const [day, month, year] = dateParts.split("/");
+    const formattedDate = new Date(
+      `${year}-${month}-${day}`
+    ).toLocaleDateString();
+    return { ...item, formatTanggal: formattedDate };
+  });
+
+  const adzanToday = formatData.filter(
+    (item: any) => item.formatTanggal === today
+  );
+
+  let tanggalSekarang = new Date();
+  let formatIndonesia = new Intl.DateTimeFormat("id-ID", {
+    year: "numeric",
+    month: "long",
+    // day: "2-digit",
+  }).format(tanggalSekarang);
+
+  interface Jadwal {
+    tanggal: string;
+    subuh: string;
+    dzuhur: string;
+    ashar: string;
+    maghrib: string;
+    isya: string;
+  }
+
   return (
     <div className="flex flex-col mx-auto max-w-4xl bg-white p-6 rounded-lg">
       <div className="flex items-center">
@@ -57,12 +88,22 @@ export default function JadwalSholat({ loaderData }: Route.ComponentProps) {
         </Breadcrumb>
       </div>
       <div className="flex flex-col gap-4 h-full">
-        <h2 className="text-3xl font-semibold mt-9">Jadwal Sholat</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-3xl font-semibold mt-9">Jadwal Sholat</h2>
+          <h2 className="text-3xl font-semibold mt-9">{formatIndonesia}</h2>
+        </div>
+        {/* <div className="flex items-center justify-between">
+          {adzanToday.map((adzanT: any) => (
+            <h2 className="text-3xl font-semibold mt-9" key={adzanT.id}>
+              {adzanT.formatTanggal}
+            </h2>
+          ))}
+        </div> */}
         <Table>
           <TableCaption>Sumber data: MyQuran.com</TableCaption>
           <TableHeader>
-            <TableRow>
-              <TableHead className="w-[150px]">Tanggal</TableHead>
+            <TableRow className="mt-5" key={900}>
+              <TableHead>Tanggal</TableHead>
               <TableHead>Subuh</TableHead>
               <TableHead>Dzuhur</TableHead>
               <TableHead>Ashar</TableHead>
@@ -71,26 +112,19 @@ export default function JadwalSholat({ loaderData }: Route.ComponentProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {jadwal.map((adzan: any) => (
-              // todo cek tanggal hari ini trs berikan class active
-              <TableRow key={adzan.tanggal} className={"bg-green-400"}>
-                <TableCell className="font-medium">
-                  {adzan.tanggal.split(",")[1]}
+            {formatData.map((adzan: any, index: number) => (
+              <TableRow key={index}>
+                <TableCell className="text-center">
+                  {adzan.formatTanggal.split("/")[0]}
                 </TableCell>
-                <TableCell>{adzan.subuh}</TableCell>
-                <TableCell>{adzan.dzuhur}</TableCell>
-                <TableCell>{adzan.ashar}</TableCell>
-                <TableCell>{adzan.maghrib}</TableCell>
-                <TableCell>{adzan.isya}</TableCell>
+                <TableCell className="text-center">{adzan.subuh}</TableCell>
+                <TableCell className="text-center">{adzan.dzuhur}</TableCell>
+                <TableCell className="text-center">{adzan.ashar}</TableCell>
+                <TableCell className="text-center">{adzan.maghrib}</TableCell>
+                <TableCell className="text-center">{adzan.isya}</TableCell>
               </TableRow>
             ))}
           </TableBody>
-          {/* <TableFooter>
-            <TableRow>
-              <TableCell colSpan={3}>Total</TableCell>
-              <TableCell className="text-right">$2,500.00</TableCell>
-            </TableRow>
-          </TableFooter> */}
         </Table>
       </div>
     </div>

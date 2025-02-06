@@ -15,6 +15,7 @@ export default [
     route("posts/:slug/destroy", "routes/posts.destroy.tsx"),
     route("jadwal-sholat", "routes/jadwal-sholat.tsx"),
     route("infaq", "routes/infaq.tsx"),
+    route("test", "routes/test-coding.tsx"),
   ]),
   route("login", "routes/login.tsx"),
   route("carousel/:id", "api/image-carousel.tsx"),
