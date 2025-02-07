@@ -14,6 +14,7 @@ import {
   getPostsByCategory,
 } from "~/models/post.server";
 import { getSession } from "~/utils/session";
+import useAutoReload from "./useAutoReload";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const url = new URL(request.url);
@@ -26,7 +27,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
   const session = await getSession(request.headers.get("Cookie"));
   const userId = session.has("userId");
-  console.log(typeof posts);
+  // console.log(typeof posts);
 
   return { posts, categories, q, userId };
 }
@@ -39,9 +40,10 @@ export default function Posts({ loaderData }: Route.ComponentProps) {
   const { posts, categories, q, userId } = loaderData;
   const str = q?.toLocaleLowerCase() || "";
   let result = str.charAt(0).toUpperCase() + str.slice(1);
+  useAutoReload(6000, "/");
 
   return (
-    <div className="flex flex-wrap  mx-auto max-w-4xl bg-white p-6 rounded-lg pb-[50px]">
+    <div className="flex flex-wrap mx-auto max-w-4xl bg-white p-6 rounded-lg pb-[50px]">
       <div className="flex items-center justify-between w-full">
         <Breadcrumb>
           <BreadcrumbList>

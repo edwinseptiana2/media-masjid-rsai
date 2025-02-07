@@ -18,6 +18,16 @@ import { prisma } from "~/utils/db.server";
 import { Prisma } from "@prisma/client";
 import { useState } from "react";
 import { nanoid } from "nanoid";
+import { getSession } from "~/utils/session";
+
+export async function loader({ params, request }: Route.LoaderArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+
+  if (!session.has("userId")) {
+    // Redirect to the home page if they are already signed in.
+    return redirect("/login");
+  }
+}
 
 export async function action({ request }: Route.ActionArgs) {
   async function uploadHandler(fileUpload: FileUpload) {

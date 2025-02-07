@@ -1,23 +1,31 @@
 # Aplikasi Media Masjid
 
 Adalah aplikasi berupa carousel informasi islami, informasi masjid, dll.
+
 ## Beberapa Fitur :
+
 1. Carousel
 2. Artikel (bisa berupa informasi kajian, posting artikel islami, dan informasi penting lainnya)
 3. Jadwal Sholat
 4. Informasi Infaq
 
 ## Include :
+
 1. Validasi input postingan/artikel
 2. auto refresh ke home jika tidak ada aktifitas di layar (selain home)
 
 # Stack :
+
 - React Router!
 - Prisma
 - MariaDB
 - TailwindCSS (ShadCN)
 
--------------------------------------------------------------
+---
+
+# Welcome to React Router!
+
+- [React Router Docs](https://reactrouter.com/home)
 
 A modern, production-ready template for building full-stack React applications using React Router.
 
