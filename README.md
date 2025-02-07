@@ -1,4 +1,21 @@
-# Welcome to React Router!
+# Aplikasi Media Masjid
+
+Adalah aplikasi berupa carousel informasi islami, informasi masjid, dll.
+## Beberapa Fitur :
+1. Carousel
+2. Artikel (
+3. Jadwal Sholat
+4. Informasi Infaq
+
+## Include :
+1. Validasi input postingan/artikel
+2. auto refresh ke home jika tidak ada aktifitas di layar (selain home)
+
+# Stack :
+- React Router!
+- Prisma
+- MariaDB
+- TailwindCSS (ShadCN)
 
 A modern, production-ready template for building full-stack React applications using React Router.
 
