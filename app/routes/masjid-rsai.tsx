@@ -1,4 +1,4 @@
-import { Hero } from "~/components/ui/hero-text-image";
+import Autoplay from "embla-carousel-autoplay";
 import {
   Carousel,
   CarouselContent,
@@ -6,11 +6,12 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "~/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
-import { cn } from "~/lib/utils";
 import { GridPattern } from "~/components/ui/grid-pattern";
-import type { Route } from "./+types/masjid-rsai";
+import { Hero } from "~/components/ui/hero-text-image";
+import { cn } from "~/lib/utils";
 import { getPosts } from "~/models/post.server";
+import type { Route } from "./+types/masjid-rsai";
+import InactivityTimer from "./useAutoReload";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const data = await getPosts();
@@ -19,8 +20,10 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export default function MasjidRsai({ loaderData }: Route.ComponentProps) {
   const data = loaderData;
+  const countObj = Object.keys(data).length;
   return (
     <>
+      <InactivityTimer timeout={9000 * countObj} />
       <div className="flex items-center justify-center h-full bg-gradient-to-b from-green-200 to-green-100">
         <Carousel
           orientation="horizontal"
@@ -30,7 +33,7 @@ export default function MasjidRsai({ loaderData }: Route.ComponentProps) {
           }}
           plugins={[
             Autoplay({
-              delay: 9000,
+              delay: 10000,
             }),
           ]}
         >

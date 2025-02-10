@@ -12,6 +12,7 @@ import { Label } from "~/components/ui/label";
 import { getSession, commitSession } from "~/utils/session";
 import type { Route } from "./+types/login";
 import { validateCredentials } from "~/models/post.server";
+import InactivityTimer from "./useAutoReload";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -77,72 +78,75 @@ export default function Login({}: Route.ComponentProps) {
   let errors = fetcher.data?.errors;
 
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10  bg-gradient-to-b from-green-200 to-green-100">
-      <div className="w-full max-w-sm shadow-lg">
-        <div className={"flex flex-col gap-6"}>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">Login</CardTitle>
-              <CardDescription>
-                Enter your Username below to login to your account
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {errors?.general ? (
-                <em className="text-red-500 text-sm">{errors.general}</em>
-              ) : null}
-              <fetcher.Form method="post">
-                <div className="flex flex-col gap-6 mt-2">
-                  <div className="grid gap-2">
-                    <Label htmlFor="username">Username</Label>
-                    <Input
-                      id="username"
-                      name="username"
-                      type="text"
-                      placeholder="username"
-                      required
-                    />
-                    {errors?.username ? (
-                      <em className="text-red-500 text-sm">
-                        {errors.username}
-                      </em>
-                    ) : null}
-                  </div>
-                  <div className="grid gap-2">
-                    <div className="flex items-center">
-                      <Label htmlFor="password">Password</Label>
+    <>
+      <InactivityTimer timeout={120000} />
+      <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10  bg-gradient-to-b from-green-200 to-green-100">
+        <div className="w-full max-w-sm shadow-lg">
+          <div className={"flex flex-col gap-6"}>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-2xl">Login</CardTitle>
+                <CardDescription>
+                  Enter your Username below to login to your account
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {errors?.general ? (
+                  <em className="text-red-500 text-sm">{errors.general}</em>
+                ) : null}
+                <fetcher.Form method="post">
+                  <div className="flex flex-col gap-6 mt-2">
+                    <div className="grid gap-2">
+                      <Label htmlFor="username">Username</Label>
+                      <Input
+                        id="username"
+                        name="username"
+                        type="text"
+                        placeholder="username"
+                        required
+                      />
+                      {errors?.username ? (
+                        <em className="text-red-500 text-sm">
+                          {errors.username}
+                        </em>
+                      ) : null}
                     </div>
-                    <Input
-                      id="password"
-                      name="password"
-                      type="password"
-                      required
-                    />
-                    {errors?.password ? (
-                      <em className="text-red-500 text-sm">
-                        {errors.password}
-                      </em>
-                    ) : null}
+                    <div className="grid gap-2">
+                      <div className="flex items-center">
+                        <Label htmlFor="password">Password</Label>
+                      </div>
+                      <Input
+                        id="password"
+                        name="password"
+                        type="password"
+                        required
+                      />
+                      {errors?.password ? (
+                        <em className="text-red-500 text-sm">
+                          {errors.password}
+                        </em>
+                      ) : null}
+                    </div>
+                    <Button type="submit" className="w-full">
+                      Login
+                    </Button>
                   </div>
-                  <Button type="submit" className="w-full">
-                    Login
-                  </Button>
-                </div>
-                <div className="mt-6 text-center text-sm">
-                  Go to{" "}
-                  <Link
-                    to="/"
-                    className="text-primary underline underline-offset-4 hover:text-secondary-foreground"
-                  >
-                    Home
-                  </Link>{" "}
-                  Masjid Riyaadhush Shaalihaat
-                </div>
-              </fetcher.Form>
-            </CardContent>
-          </Card>
+                  <div className="mt-6 text-center text-sm">
+                    Go to{" "}
+                    <Link
+                      to="/"
+                      className="text-primary underline underline-offset-4 hover:text-secondary-foreground"
+                    >
+                      Home
+                    </Link>{" "}
+                    Masjid Riyaadhush Shaalihaat
+                  </div>
+                </fetcher.Form>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

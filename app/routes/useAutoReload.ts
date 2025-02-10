@@ -1,41 +1,52 @@
-import { useEffect, useRef } from "react";
-import { redirect } from "react-router";
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router";
 
-const useAutoReload = (
-  timeoutDuration: number = 6000,
-  redirectPath: string = "/"
-) => {
-  const timeout = useRef<number | undefined>(undefined);
-
-  const redirectToHome = () => {
-    redirect("/");
-  };
-
-  const resetTimer = () => {
-    if (timeout.current) {
-      clearTimeout(timeout.current);
-    }
-    timeout.current = window.setTimeout(redirectToHome, timeoutDuration);
-  };
+const InactivityTimer = ({ timeout = 5000 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  console.log(location.pathname);
+  const [timer, setTimer] = useState(timeout);
 
   useEffect(() => {
-    resetTimer();
+    let inactivityTimer;
 
-    window.addEventListener("mousemove", resetTimer);
-    window.addEventListener("keypress", resetTimer);
-    window.addEventListener("touchstart", resetTimer);
-
-    return () => {
-      if (timeout.current) {
-        clearTimeout(timeout.current);
-      }
-      window.removeEventListener("mousemove", resetTimer);
-      window.removeEventListener("keypress", resetTimer);
-      window.removeEventListener("touchstart", resetTimer);
+    // Fungsi untuk mereset timer saat ada aktivitas
+    const resetTimer = () => {
+      setTimer(timeout); // Reset timer ke nilai yang sudah ditentukan
     };
-  }, [timeoutDuration, redirectPath]);
+
+    // Set event listener untuk mendeteksi aktivitas pengguna
+    const activityEvents = ["mousemove", "keydown", "scroll", "click"];
+    activityEvents.forEach((event) => {
+      window.addEventListener(event, resetTimer);
+    });
+
+    // Timer untuk menghitung waktu inaktivitas
+    inactivityTimer = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 0) {
+          // Jika timer mencapai 0, redirect ke home
+          if (location.pathname === "/") {
+            // window.location.reload();
+            // console.log("masuk");
+            navigate(0);
+          }
+          navigate("/", { replace: true });
+        }
+        return prev - 1000; // Kurangi timer setiap detik
+      });
+    }, 1000);
+
+    // Membersihkan timer dan event listener saat komponen di-unmount
+    return () => {
+      clearInterval(inactivityTimer);
+      activityEvents.forEach((event) => {
+        window.removeEventListener(event, resetTimer);
+      });
+    };
+  }, [timeout, navigate]);
 
   return null;
 };
 
-export default useAutoReload;
+export default InactivityTimer;
