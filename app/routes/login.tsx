@@ -12,8 +12,6 @@ import { Label } from "~/components/ui/label";
 import { getSession, commitSession } from "~/utils/session";
 import type { Route } from "./+types/login";
 import { validateCredentials } from "~/models/post.server";
-import InactivityTimer from "./useAutoReload";
-
 export async function loader({ request }: Route.LoaderArgs) {
   const session = await getSession(request.headers.get("Cookie"));
 
@@ -32,16 +30,23 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export async function action({ request }: Route.ActionArgs) {
-  const session = await getSession(request.headers.get("Cookie"));
-  let form = await request.formData();
-  let username = form.get("username")?.toString();
-  let password = form.get("password")?.toString();
-
   const errors: {
     username?: string;
     password?: string;
     general?: string;
   } = {};
+
+  const session = await getSession(request.headers.get("Cookie"));
+
+  console.log(session);
+
+  if (!session) {
+    errors.general = "Username atau Password yang anda masukkan salah";
+  }
+
+  let form = await request.formData();
+  let username = form.get("username")?.toString().trim();
+  let password = form.get("password")?.toString().trim();
 
   if (!username || username.length < 3) {
     errors.username = "Username masih kosong";
@@ -66,7 +71,7 @@ export async function action({ request }: Route.ActionArgs) {
   }
 
   // Login succeeded, send them to the home page.
-  return redirect("/posts/new", {
+  return redirect("/posts", {
     headers: {
       "Set-Cookie": await commitSession(session),
     },
@@ -79,7 +84,6 @@ export default function Login({}: Route.ComponentProps) {
 
   return (
     <>
-      <InactivityTimer timeout={120000} />
       <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10  bg-gradient-to-b from-green-200 to-green-100">
         <div className="w-full max-w-sm shadow-lg">
           <div className={"flex flex-col gap-6"}>

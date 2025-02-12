@@ -6,7 +6,6 @@ import invariant from "tiny-invariant";
 import {
   Breadcrumb,
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
@@ -33,7 +32,7 @@ export default function Post({ loaderData }: Route.ComponentProps) {
 
   return (
     <>
-      <InactivityTimer timeout={60000} />
+      <InactivityTimer timeout={180000} />
       <div className="flex flex-col mx-auto max-w-4xl bg-white p-6 rounded-lg h-full">
         <div className="flex items-center">
           <Breadcrumb>
@@ -67,7 +66,7 @@ export default function Post({ loaderData }: Route.ComponentProps) {
           className="flex flex-col mt-8 prose prose-slate mx-auto lg:prose-lg max-[767px]:prose"
           dangerouslySetInnerHTML={{ __html: content }}
         />
-        <div className="flex mt-8 justify-between">
+        <div className="flex mt-12 justify-between">
           <p className="text-md text-muted-foreground">
             Penulis: {post.author}
           </p>

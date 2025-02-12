@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router";
 const InactivityTimer = ({ timeout = 5000 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(location.pathname);
+  // console.log(location.pathname);
   const [timer, setTimer] = useState(timeout);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const InactivityTimer = ({ timeout = 5000 }) => {
           if (location.pathname === "/") {
             // window.location.reload();
             // console.log("masuk");
-            navigate(0);
+            navigate("/", { replace: true });
           }
           navigate("/", { replace: true });
         }
@@ -44,7 +44,7 @@ const InactivityTimer = ({ timeout = 5000 }) => {
         window.removeEventListener(event, resetTimer);
       });
     };
-  }, [timeout, navigate]);
+  }, [timeout, navigate, location]);
 
   return null;
 };
