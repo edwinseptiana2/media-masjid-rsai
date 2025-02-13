@@ -102,10 +102,10 @@ export default function MenuTabs({ loaderData }: Route.ComponentProps) {
           <NavBar items={navItems} />
         </div>
       </div>
-      <div className="fixed w-[450px] h-[750px] bg-white top-32 right-20 z-50 rounded-lg shadow-sm">
+      <div className="fixed w-[400px] h-[750px] bg-white top-32 right-14 z-50 rounded-lg shadow-sm">
         <AdsInfaq />
       </div>
-      <div className="fixed w-[450px] h-[750px] bg-white top-32 left-20 z-50 rounded-lg shadow-sm">
+      <div className="fixed w-[400px] h-[750px] bg-white top-32 left-14 z-50 rounded-lg shadow-sm">
         <div className="w-full text-2xl flex flex-col items-start justify-start bg-background font-normal overflow-hidden p-12 pt-16 rounded-lg ">
           <span className=" font-bold">{"Jadwal Sholat kota Bandung"}</span>
           <div className="flex flex-row items-center justify-between shadow-sm w-full ">
@@ -115,8 +115,8 @@ export default function MenuTabs({ loaderData }: Route.ComponentProps) {
                 className="flex items-center w-full rounded-lg justify-between"
               >
                 <div className="flex  flex-col  w-full p-4 rounded-lg justify-center">
-                  <div className="flex flex-col mb-4 items-center">
-                    <div className="flex items-center gap-2  w-4/5 p-3 justify-center">
+                  <div className="flex flex-col mb-2 items-center">
+                    <div className="flex items-center gap-2 w-full p-3 justify-center">
                       <h2 className="text-xl font-medium ">
                         {new Date().toLocaleDateString("id-ID", {
                           weekday: "long",
@@ -127,9 +127,9 @@ export default function MenuTabs({ loaderData }: Route.ComponentProps) {
                       </h2>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-5 items-center justify-center">
+                  <div className="flex flex-col gap-3 items-center justify-center">
                     <div className={classCard}>
-                      <div className="flex justify-between items-center w-full p-4">
+                      <div className="flex justify-between items-center w-full p-2">
                         <Cloudy width={42} height={42} className="ml-6" />
                         <div className="mr-6 w-1/2 ml-6 border-l-2">
                           <div className="font-semibold text-xl mb-1">
@@ -142,7 +142,7 @@ export default function MenuTabs({ loaderData }: Route.ComponentProps) {
                       </div>
                     </div>
                     <div className={classCard}>
-                      <div className="flex justify-between items-center w-full p-4">
+                      <div className="flex justify-between items-center w-full p-2">
                         <Sun width={42} height={42} className="ml-6" />
                         <div className="mr-6 w-1/2 ml-6 border-l-2">
                           <div className="font-semibold text-xl mb-1">
@@ -155,7 +155,7 @@ export default function MenuTabs({ loaderData }: Route.ComponentProps) {
                       </div>
                     </div>
                     <div className={classCard}>
-                      <div className="flex justify-between items-center w-full p-4">
+                      <div className="flex justify-between items-center w-full p-2">
                         <CloudSun width={42} height={42} className="ml-6" />
                         <div className="mr-6 w-1/2 ml-6 border-l-2">
                           <div className="font-semibold text-xl mb-1">
@@ -168,7 +168,7 @@ export default function MenuTabs({ loaderData }: Route.ComponentProps) {
                       </div>
                     </div>
                     <div className={classCard}>
-                      <div className="flex justify-between items-center w-full p-4">
+                      <div className="flex justify-between items-center w-full p-2">
                         <Sunset width={42} height={42} className="ml-6" />
                         <div className="mr-6 w-1/2 ml-6 border-l-2">
                           <div className="font-semibold text-xl mb-1">
@@ -181,7 +181,7 @@ export default function MenuTabs({ loaderData }: Route.ComponentProps) {
                       </div>
                     </div>
                     <div className={classCard}>
-                      <div className="flex justify-between items-center w-full p-4">
+                      <div className="flex justify-between items-center w-full p-2">
                         <Moon width={42} height={42} className="ml-6" />
                         <div className="mr-6 w-1/2 ml-6 border-l-2">
                           <div className="font-semibold text-xl mb-1">Isya</div>
@@ -214,7 +214,7 @@ function AdsInfaq() {
             "Berinfaqlah, niscaya Aku akan menafkahimu.",
           ]}
           speed={70}
-          className="text-green-700 font-semibold leading-relaxed"
+          className="text-green-700 font-semibold leading-normal"
           waitTime={1500}
           deleteSpeed={40}
           cursorChar={"_"}
