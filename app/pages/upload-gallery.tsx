@@ -23,7 +23,7 @@ export default function UploadGalery({ params }: Route.ComponentProps) {
 
   return (
     <div className="flex flex-col mx-auto max-w-4xl bg-white p-6 rounded-lg h-full mt-10">
-      <h1 className="text-2xl  font-bold">Upload Galery 📸</h1>
+      <h1 className="text-2xl  font-bold">Upload Galery test 📸</h1>
       <form
         method="post"
         // The form's enctype must be set to "multipart/form-data" for file uploads
